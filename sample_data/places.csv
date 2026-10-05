@@ -1,0 +1,6 @@
+place_id,name,address,website,phone,lat,lng,primary_type,types,status,matched_query,km_to_nearest_center
+fake_place_001,Bayou Byte Labs,"123 Example St, Houston, TX 77002",https://www.bayoubyte.example/,(713) 555-0101,29.7604,-95.3698,,point_of_interest,OPERATIONAL,software development company; software company,0.4
+fake_place_002,Katy Data Works LLC,"456 Sample Rd, Katy, TX 77494",https://katydataworks.example,,29.7858,-95.8245,,point_of_interest,OPERATIONAL,data analytics company,1.2
+fake_place_003,Gulf Coast Web Studio,"789 Demo Ave, Houston, TX 77057",https://www.facebook.com/gulfcoastwebstudio,(713) 555-0103,29.7380,-95.4600,,point_of_interest,OPERATIONAL,web development agency,0.8
+fake_place_004,Co-op Labs,"22 Placeholder Ln, Houston, TX 77004",https://cooplabs.example,,29.7199,-95.3422,,point_of_interest,OPERATIONAL,IT consulting,3.5
+fake_place_005,Energy Corridor Engineering Group,"900 Mock Blvd, Houston, TX 77079",https://ecegroup.example,(281) 555-0105,29.7836,-95.6200,,point_of_interest,OPERATIONAL,engineering consulting firm,2.0

@@ -1,0 +1,5 @@
+github_login,name,description,website,email,location,public_repos,languages,last_push,github_url
+example-bayoubyte,Bayou Byte Labs,Custom web apps for local businesses,bayoubyte.example,hello@bayoubyte.example,"Houston, TX",12,"TypeScript, JavaScript, CSS",2026-09-14T18:22:05Z,https://github.com/example-bayoubyte
+example-katydataworks,Katy Data Works,Data pipelines and dashboards,,,"Katy, TX",7,"Python, Jupyter Notebook",2025-11-02T09:10:00Z,https://github.com/example-katydataworks
+example-westpark,Westpark Analytics Inc.,Forecasting for energy clients,https://westpark.example,,"Houston, Texas",4,"Python, R",2026-07-30T12:00:00Z,https://github.com/example-westpark
+example-oldtownsoft,Old Town Software,,http://oldtownsoft.example,,"Sugar Land, TX",2,Java,2021-03-01T00:00:00Z,https://github.com/example-oldtownsoft
