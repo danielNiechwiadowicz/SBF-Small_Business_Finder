@@ -1,29 +1,17 @@
 """Settings shared by every step of the pipeline. Edit these, not the scripts."""
+import os
 from pathlib import Path
 from dotenv import load_dotenv
+
 load_dotenv()
 
-DATA_DIR = Path(os.enviroment.get("COMPANY_FINDER_DATA", Path(__file__).parent / "data"))
+DATA_DIR = Path(os.environ.get("COMPANY_FINDER_DATA", Path(__file__).parent / "data"))
 DATA_DIR.mkdir(exist_ok=True)
 
 
 
 
 # Google Places
-
-# Search circles (lat, lng). Each query runs once per center.
-SEARCH_CENTERS = {
-    "Katy":            (29.7858, -95.8245),
-    "Energy Corridor": (29.7836, -95.6200),
-    "Galleria":        (29.7380, -95.4600),
-    "Downtown":        (29.7604, -95.3698),
-    "UH / Midtown":    (29.7199, -95.3422),
-    "Sugar Land":      (29.6197, -95.6349),
-    "The Woodlands":   (30.1658, -95.4613),
-}
-SEARCH_RADIUS_M = 8000          # bias radius around each center
-MAX_DISTANCE_KM = 15            # drop results farther than this from every center
-
 # Query -> which resume lane it suggests
 PLACES_QUERIES = {
     "software development company": "full-stack",
@@ -41,15 +29,6 @@ EXCLUDE_NAME_KEYWORDS = [
     "geek squad", "printer", "copier", "staffing",
 ]
 
-
-
-# GitHub Config
-
-# GitHub "location" is free text, so cover the spellings
-GITHUB_LOCATIONS = [
-    "Houston", "Katy", "Sugar Land", "The Woodlands", "Cypress, TX", "Spring, TX",
-]
-GITHUB_MAX_ORGS_PER_LOCATION = 300   # search API hard-caps at 1000 anyway
 
 # Orgs whose name/description contains these are usually not employers
 GITHUB_EXCLUDE_KEYWORDS = [

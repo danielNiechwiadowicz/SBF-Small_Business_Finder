@@ -1,14 +1,8 @@
 """
-Step 1a: find local companies with the Google Places API (New) Text Search.
-
 Usage:
-    export GOOGLE_PLACES_API_KEY=...
-    python ingest_places.py            # shows planned request count, then stops
-    python ingest_places.py --confirm  # actually runs (this costs API credit)
-
-Output: data/places.csv
+    python main.py places            # shows planned request count, then stops
+    python main.py places --confirm  # actually runs (costs API credit)
 """
-import argparse
 import math
 import os
 import time
@@ -16,8 +10,8 @@ import time
 import pandas as pd
 import requests
 
-from config import (DATA_DIR, EXCLUDE_NAME_KEYWORDS, MAX_DISTANCE_KM,
-                    PLACES_QUERIES, SEARCH_CENTERS, SEARCH_RADIUS_M)
+from config import (DATA_DIR, EXCLUDE_NAME_KEYWORDS,
+                    PLACES_QUERIES)
 
 URL = "https://places.googleapis.com/v1/places:searchText"
 FIELD_MASK = ",".join([
@@ -36,14 +30,14 @@ def haversine_km(a, b):
     return 6371 * 2 * math.asin(math.sqrt(h))
 
 
-def text_search(key, query, center):
+def text_search(key, query, center, radius_m):
     headers = {"X-Goog-Api-Key": key, "X-Goog-FieldMask": FIELD_MASK}
     body = {
         "textQuery": query,
         "pageSize": 20,
         "locationBias": {"circle": {
             "center": {"latitude": center[0], "longitude": center[1]},
-            "radius": SEARCH_RADIUS_M,
+            "radius": radius_m,
         }},
     }
     results = []
@@ -77,15 +71,12 @@ def to_row(p, query):
     }
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--confirm", action="store_true", help="actually call the API")
-    args = ap.parse_args()
-
-    n_calls = len(PLACES_QUERIES) * len(SEARCH_CENTERS)
-    print(f"Plan: {len(PLACES_QUERIES)} queries x {len(SEARCH_CENTERS)} centers "
+def run(region, confirm):
+    centers = region["centers"]
+    n_calls = len(PLACES_QUERIES) * len(centers)
+    print(f"Plan: {len(PLACES_QUERIES)} queries x {len(centers)} centers "
           f"= {n_calls} searches, up to {n_calls * MAX_PAGES} requests.")
-    if not args.confirm:
+    if not confirm:
         print("Check your Places API pricing/free quota, then rerun with --confirm.")
         return
 
@@ -95,9 +86,9 @@ def main():
 
     rows = []
     for query in PLACES_QUERIES:
-        for area, center in SEARCH_CENTERS.items():
+        for area, center in centers.items():
             try:
-                found = text_search(key, query, center)
+                found = text_search(key, query, center, region["radius_m"])
             except requests.HTTPError as e:
                 print(f"  error on '{query}' @ {area}: {e}")
                 continue
@@ -121,15 +112,11 @@ def main():
     df = df[~df["name"].str.lower().apply(
         lambda n: any(k in n for k in EXCLUDE_NAME_KEYWORDS))]
     df["km_to_nearest_center"] = df.apply(
-        lambda r: min(haversine_km((r.lat, r.lng), c) for c in SEARCH_CENTERS.values()),
+        lambda r: min(haversine_km((r.lat, r.lng), c) for c in centers.values()),
         axis=1).round(1)
-    df = df[df["km_to_nearest_center"] <= MAX_DISTANCE_KM]
+    df = df[df["km_to_nearest_center"] <= region["max_distance_km"]]
     print(f"Kept {len(df)} of {before} unique places after filtering.")
 
     out = DATA_DIR / "places.csv"
     df.to_csv(out, index=False)
     print(f"Saved {out}")
-
-
-if __name__ == "__main__":
-    main()

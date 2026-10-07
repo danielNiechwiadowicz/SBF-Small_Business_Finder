@@ -8,7 +8,6 @@ Usage:
 
 Output: data/github_orgs.csv
 """
-import argparse
 import os
 import time
 from collections import Counter
@@ -16,8 +15,7 @@ from collections import Counter
 import pandas as pd
 import requests
 
-from config import (DATA_DIR, GITHUB_EXCLUDE_KEYWORDS, GITHUB_LOCATIONS,
-                    GITHUB_MAX_ORGS_PER_LOCATION)
+from config import (DATA_DIR, GITHUB_EXCLUDE_KEYWORDS)
 
 API = "https://api.github.com"
 
@@ -97,17 +95,12 @@ def looks_like_non_employer(row):
     return any(k in text for k in GITHUB_EXCLUDE_KEYWORDS)
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--limit", type=int, default=GITHUB_MAX_ORGS_PER_LOCATION,
-                    help="max orgs per location")
-    args = ap.parse_args()
-
+def run(region, limit):
     s = make_session()
 
     logins = []
-    for loc in GITHUB_LOCATIONS:
-        found = search_orgs(s, loc, args.limit)
+    for loc in region["github_locations"]:
+        found = search_orgs(s, loc, limit)
         print(f"{loc:15s} {len(found):4d} orgs")
         logins += found
     logins = list(dict.fromkeys(logins))  # dedupe, keep order
@@ -134,7 +127,3 @@ def main():
     out = DATA_DIR / "github_orgs.csv"
     df.to_csv(out, index=False)
     print(f"Saved {out}")
-
-
-if __name__ == "__main__":
-    main()

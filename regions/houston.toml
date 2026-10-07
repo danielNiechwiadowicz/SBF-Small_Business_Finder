@@ -1,0 +1,13 @@
+name = "Houston"
+radius_m = 8000
+max_distance_km = 15
+github_locations = ["Houston", "Katy", "Sugar Land", "The Woodlands", "Cypress, TX", "Spring, TX"]
+
+[centers]
+"Katy" = [29.7858, -95.8245]
+"Downtown" = [29.7604, -95.3698]
+"Energy Corridor" = [29.7836, -95.6200]
+"Galleria" = [29.7380, -95.4600]
+"UH / Midtown" = [29.7199, -95.3422]
+"Sugar Land" = [29.6197, -95.6349]
+"The Woodlands" = [30.1658, -95.4613]

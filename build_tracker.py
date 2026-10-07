@@ -2,7 +2,7 @@
 Step 2: merge Places + GitHub results, score each company, write tracker.csv.
 
 Usage:
-    python build_tracker.py
+    python main.py
 
 Works with either input file alone. Rerunning keeps anything you typed into
 the tracking columns (contact_name, date_contacted, status, notes, ...).
@@ -22,9 +22,9 @@ MANUAL_COLS = ["contact_name", "contact_email", "date_contacted",
 SUFFIXES = r"\b(llc|l\.l\.c|inc|incorporated|corp|corporation|co|company|ltd|lp|pllc)\b"
 
 
-# ---------------------------------------------------------------------------
+
 # Normalization helpers
-# ---------------------------------------------------------------------------
+
 def domain(url):
     if not isinstance(url, str) or not url.strip():
         return None
@@ -54,9 +54,7 @@ def load(name):
     return pd.DataFrame()
 
 
-# ---------------------------------------------------------------------------
 # Merge
-# ---------------------------------------------------------------------------
 def merge(places, github):
     records = []
     used_gh = set()
@@ -102,9 +100,7 @@ def merge(places, github):
     return pd.DataFrame(records)
 
 
-# ---------------------------------------------------------------------------
 # Scoring
-# ---------------------------------------------------------------------------
 def lane_and_score(r):
     score, reasons = 0, []
     langs = {l.strip() for l in r["languages"].split(",") if l.strip()}
@@ -142,7 +138,7 @@ def lane_and_score(r):
     return pd.Series({"score": score, "lane": lane, "why": "; ".join(reasons)})
 
 
-def main():
+def run():
     places, github = load("places.csv"), load("github_orgs.csv")
     if places.empty and github.empty:
         raise SystemExit("Run ingest_places.py and/or ingest_github.py first.")
@@ -183,7 +179,3 @@ def main():
     print(df["lane"].value_counts().to_string())
     print("\nTop 10:")
     print(df.head(10)[["score", "lane", "name", "why"]].to_string(index=False))
-
-
-if __name__ == "__main__":
-    main()
